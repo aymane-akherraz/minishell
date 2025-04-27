@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/27 11:41:37 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/27 22:27:41 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,30 +35,43 @@ t_ast_node	*create_node(char *val, t_ast_node *parent, t_token type)
 	return (node);
 }
 
+int	is_valid(char *s)
+{
+	int	i;
+	int	flag;
+
+	i = 0;
+	while (s[i])
+	{
+		flag = 0;
+		while (s[i] == ' ')
+			i++;
+		while (ft_isalnum(s[i]) || s[i] == '-' || s[i] == '_'
+				|| s[i] == '/' || s[i] == '.')
+		{
+			flag = 1;
+			i++;
+		}
+		if (!flag)
+			return (1);
+		while (s[i] == ' ')
+			i++;
+		if ((s[i] == '>' && s[i + 1] == '>') || (s[i] == '<' && s[i + 1] == '<'))
+			i += 2;
+		else if (s[i] == '>' || s[i] == '<' || s[i] == '|')
+			i++;
+	}
+	if (s[i - 1] == '|')
+    	return (1);
+	return (0);
+}
+
 int	main(void)
 {
-	int		i;
+	//int		i;
 	char	*line;
-	char	**tokens;
-	t_ast_node	*root;
-	t_ast_node	*parent;
+	//char	**tokens;
 
 	line = readline("$ ");
-	tokens = ft_split(line, ' ');
-	if (!tokens)
-		printf("error");
-	if (is_word(tokens[0]))
-	{
-		root = create_node(tokens[0], NULL, CMD_NAME);
-	}
-	i = 1;
-	while (tokens[i])
-	{
-		if (is_word(tokens[i]))
-		{
-			
-
-		}
-		i++;
-	}
+	
 }
