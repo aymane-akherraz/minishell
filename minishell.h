@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:40:46 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/26 19:50:03 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:44:13 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 
 typedef enum token
 {
-	WORD,
+	CMD_NAME,
+	CMD_ARGS,
 	PIPE,
 	IN_R,
 	OUT_R,
@@ -29,11 +30,18 @@ typedef enum token
 	APPEND
 }	t_token;
 
+typedef struct redirect
+{
+	char		*file;
+	t_token		type;
+}	t_redirect;
+
 typedef struct ast_node
 {
 	char				*value;
 	t_token				type;
-	struct ast_node		*parent_node;
+	struct redirect		*redis;
+	struct ast_node		*parent;
 	struct ast_node		*left_node;
 	struct ast_node		*right_node;
 }	t_ast_node;
