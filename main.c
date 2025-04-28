@@ -6,34 +6,11 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/27 22:27:41 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/28 15:35:09 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_word(char *s)
-{
-	if (ft_strcmp(s, "|") && ft_strcmp(s, "<") && ft_strcmp(s, ">")
-		&& ft_strcmp(s, "<<") && ft_strcmp(s, ">>"))
-		return (1);
-	return (0);
-}
-
-t_ast_node	*create_node(char *val, t_ast_node *parent, t_token type)
-{
-	t_ast_node	*node;
-
-	node = malloc(sizeof(t_ast_node));
-	if (!node)
-		return (NULL);
-	node->parent = parent;
-	node->left_node = NULL;
-	node->right_node = NULL;
-	node->value = val;
-	node->type = type;
-	return (node);
-}
 
 int	is_valid(char *s)
 {
@@ -47,7 +24,7 @@ int	is_valid(char *s)
 		while (s[i] == ' ')
 			i++;
 		while (ft_isalnum(s[i]) || s[i] == '-' || s[i] == '_'
-				|| s[i] == '/' || s[i] == '.')
+				|| s[i] == '/' || s[i] == '.' || s[i] == '\'' || s[i] == '"')
 		{
 			flag = 1;
 			i++;
@@ -61,7 +38,7 @@ int	is_valid(char *s)
 		else if (s[i] == '>' || s[i] == '<' || s[i] == '|')
 			i++;
 	}
-	if (s[i - 1] == '|')
+	if (s[i - 1] == '|' || s[i - 1] == '>' || s[i - 1] == '<')
     	return (1);
 	return (0);
 }
@@ -70,8 +47,17 @@ int	main(void)
 {
 	//int		i;
 	char	*line;
+	char	*new_line;
 	//char	**tokens;
 
-	line = readline("$ ");
-	
+	while (1)
+	{
+		line = readline("$ ");
+		add_history(line);
+		new_line = ft_strtrim(line, " ");
+		if (is_valid(new_line))
+			printf("error\n");
+		free(line);
+		free(new_line);
+	}
 }
