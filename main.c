@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/29 12:37:12 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/29 15:22:10 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,38 +72,40 @@ char	*handle_exp(char *s)
 {
 	char	*ptr;
 	char	*new;
-	char	*d_quote;
-	char	*s_quote;
+	char	*d;
+	char	*str;
 	size_t		i;
 
-	d_quote = ft_strchr(s, '"');
-	s_quote = ft_strchr(s, '\'');
-	if (((d_quote && s_quote) && (d_quote < s_quote)) || (!d_quote && !s_quote) || (d_quote && !s_quote))
+	d = ft_strchr(s, '"');
+	str = ft_strchr(s, '\'');
+	if (((d && str) && (d < str))
+		|| (!d && !str) || (d && !str))
 	{
-		if (d_quote)
-			ptr = ft_strchr(d_quote, '$');
+		if (d)
+			ptr = ft_strchr(d, '$');
 		else
 			ptr = ft_strchr(s, '$');
 		if (ptr)
 		{
 			ptr++;
 			i = 0;
-			while (ptr[i] && ptr[i] != ' ' && ptr[i] != '\'' && ptr[i] != '"')
+			while (ptr[i] && ptr[i] != ' ' && ptr[i] != '\''
+					&& ptr[i] != '"' && ptr[i] != '$')
 				i++;
-			s_quote = ft_substr(ptr, 0, i);
-			d_quote = getenv(s_quote);
-			free(s_quote);
-			if (d_quote)
+			str = ft_substr(ptr, 0, i);
+			d = getenv(str);
+			free(str);
+			if (d)
 			{
 				new = ft_substr(s, 0, ptr - s - 1);
-				s_quote = ft_strjoin(new, d_quote);
+				str = ft_strjoin(new, d);
 				free(new);
-				new = ft_strjoin(s_quote, ptr + i);
-				free(s_quote);
+				new = ft_strjoin(str, ptr + i);
+				free(str);
 				return (new);
 			}
 		}
-	}
+	}	
 	return (NULL);
 }
 
@@ -120,18 +122,19 @@ int	main(void)
 		line = readline("$ ");
 		add_history(line);
 		new_line = ft_strtrim(line, " ");
+		free(line);
 		if (is_valid(new_line))
 			printf("error1\n");
 		if (check_qoutes(new_line))
 			printf("error2\n");
 		ptr = handle_exp(new_line);
-		if (ptr)
+		while (ptr)
 		{
 			free(new_line);
 			new_line = ptr;
+			ptr = handle_exp(new_line);
 		}
 		printf("%s\n", new_line);
-		free(line);
 		free(new_line);
 	}
 }
