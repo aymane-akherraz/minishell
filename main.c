@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/28 19:37:59 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/29 12:37:12 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_valid(char *s)
 		flag = 0;
 		while (s[i] == ' ')
 			i++;
-		while (ft_isalnum(s[i]) || s[i] == '-' || s[i] == '_'
+		while (ft_isalnum(s[i]) || s[i] == '-' || s[i] == '_' || s[i] == '$'
 				|| s[i] == '/' || s[i] == '.' || s[i] == '\'' || s[i] == '"')
 		{
 			flag = 1;
@@ -68,11 +68,51 @@ int	check_qoutes(char *s)
 	return (0);
 }
 
+char	*handle_exp(char *s)
+{
+	char	*ptr;
+	char	*new;
+	char	*d_quote;
+	char	*s_quote;
+	size_t		i;
+
+	d_quote = ft_strchr(s, '"');
+	s_quote = ft_strchr(s, '\'');
+	if (((d_quote && s_quote) && (d_quote < s_quote)) || (!d_quote && !s_quote) || (d_quote && !s_quote))
+	{
+		if (d_quote)
+			ptr = ft_strchr(d_quote, '$');
+		else
+			ptr = ft_strchr(s, '$');
+		if (ptr)
+		{
+			ptr++;
+			i = 0;
+			while (ptr[i] && ptr[i] != ' ' && ptr[i] != '\'' && ptr[i] != '"')
+				i++;
+			s_quote = ft_substr(ptr, 0, i);
+			d_quote = getenv(s_quote);
+			free(s_quote);
+			if (d_quote)
+			{
+				new = ft_substr(s, 0, ptr - s - 1);
+				s_quote = ft_strjoin(new, d_quote);
+				free(new);
+				new = ft_strjoin(s_quote, ptr + i);
+				free(s_quote);
+				return (new);
+			}
+		}
+	}
+	return (NULL);
+}
+
 int	main(void)
 {
 	//int		i;
 	char	*line;
 	char	*new_line;
+	char	*ptr;
 	//char	**tokens;
 
 	while (1)
@@ -84,6 +124,13 @@ int	main(void)
 			printf("error1\n");
 		if (check_qoutes(new_line))
 			printf("error2\n");
+		ptr = handle_exp(new_line);
+		if (ptr)
+		{
+			free(new_line);
+			new_line = ptr;
+		}
+		printf("%s\n", new_line);
 		free(line);
 		free(new_line);
 	}
