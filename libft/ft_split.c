@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aakherra <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 12:01:41 by aakherra          #+#    #+#             */
-/*   Updated: 2024/11/03 17:17:47 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/30 12:33:42 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,23 @@ static int	allocate(char **a, char const *s, size_t i, size_t *p)
 
 static char	**helper(char const *s, char c, char **arr)
 {
-	size_t	i;
+	int		s_flag;
+	int		d_flag;
+	size_t		i;
 	size_t	p[2];
-
+	
 	i = 0;
 	p[0] = 0;
 	p[1] = 0;
+	s_flag = 0;
+	d_flag = 0;
 	while (s[i])
 	{
-		if (s[i] == c)
+		if (s[i] == '\'' && !d_flag)
+			s_flag = !s_flag;
+		else if (s[i] == '"' && !s_flag)
+			d_flag = !d_flag;
+		if (!s_flag && !d_flag && s[i] == c)
 		{
 			if (p[1] > 0 && (!allocate(arr, s, i, p)))
 				break ;

@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/29 15:22:10 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/30 12:47:23 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,11 @@ char	*handle_exp(char *s)
 
 int	main(void)
 {
-	//int		i;
+	int		i;
 	char	*line;
 	char	*new_line;
 	char	*ptr;
-	//char	**tokens;
+	char	**tokens;
 
 	while (1)
 	{
@@ -132,9 +132,18 @@ int	main(void)
 		{
 			free(new_line);
 			new_line = ptr;
+			printf("line :%s\n", new_line);
 			ptr = handle_exp(new_line);
 		}
-		printf("%s\n", new_line);
+		tokens = ft_split(new_line, ' ');
+		i = 0;
+		while (tokens[i])
+		{
+			printf("%s\n", tokens[i]);
+			i++;
+		}
+		
+		
 		free(new_line);
 	}
 }

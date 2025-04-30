@@ -6,18 +6,19 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:40:46 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/27 17:54:24 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/04/30 12:34:02 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdio.h>
 # include "libft/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdlib.h>
-# include <stdio.h>
+
 
 typedef enum token
 {
