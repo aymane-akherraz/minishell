@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/30 12:47:23 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/03 11:20:45 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,11 @@ int	check_qoutes(char *s)
 	i = 0;
 	while (s[i])
 	{
-		while (s[i] && s[i] != '\'' && s[i] != '"')
-			i++;
 		if (s[i] == '\'' && !double_f)
 			single_f = !single_f;
 		else if (s[i] == '"' && !single_f)
 			double_f = !double_f;
-		if (s[i])
-			i++;
+		i++;
 	}
 	if (double_f || single_f)
 		return (1);
@@ -70,42 +67,52 @@ int	check_qoutes(char *s)
 
 char	*handle_exp(char *s)
 {
-	char	*ptr;
 	char	*new;
 	char	*d;
 	char	*str;
-	size_t		i;
+	int		i;
+	int		j;
+	int	single_f;
+	int	double_f;
 
-	d = ft_strchr(s, '"');
-	str = ft_strchr(s, '\'');
-	if (((d && str) && (d < str))
-		|| (!d && !str) || (d && !str))
+	single_f = 0;
+	double_f = 0;
+	i = 0;
+	j = 1;
+	while (s[i])
 	{
-		if (d)
-			ptr = ft_strchr(d, '$');
-		else
-			ptr = ft_strchr(s, '$');
-		if (ptr)
+		if (s[i] == '\'' && !double_f)
+			single_f = !single_f;
+		else if (s[i] == '"' && !single_f)
+			double_f = !double_f;
+		if (s[i] == '$' && !single_f && (double_f || !double_f))
 		{
-			ptr++;
-			i = 0;
-			while (ptr[i] && ptr[i] != ' ' && ptr[i] != '\''
-					&& ptr[i] != '"' && ptr[i] != '$')
-				i++;
-			str = ft_substr(ptr, 0, i);
+			j += i;
+			while (s[j] && s[j] != ' ' && s[j] != '\''
+				&& s[j] != '"' && s[j] != '$')
+				j++;
+			str = ft_substr(s + i + 1, 0, j - i - 1);
 			d = getenv(str);
 			free(str);
 			if (d)
 			{
-				new = ft_substr(s, 0, ptr - s - 1);
+				new = ft_substr(s, 0, (s + i) - s);
 				str = ft_strjoin(new, d);
 				free(new);
-				new = ft_strjoin(str, ptr + i);
+				new = ft_strjoin(str, s + j);
+				free(str);
+				return (new);
+			}
+			else
+			{
+				str = ft_substr(s, 0, (s + i) - s);
+				new = ft_strjoin(str, s + j);
 				free(str);
 				return (new);
 			}
 		}
-	}	
+		i += j;
+	}
 	return (NULL);
 }
 
@@ -132,7 +139,6 @@ int	main(void)
 		{
 			free(new_line);
 			new_line = ptr;
-			printf("line :%s\n", new_line);
 			ptr = handle_exp(new_line);
 		}
 		tokens = ft_split(new_line, ' ');
@@ -142,7 +148,6 @@ int	main(void)
 			printf("%s\n", tokens[i]);
 			i++;
 		}
-		
 		
 		free(new_line);
 	}
