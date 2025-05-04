@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/05/04 19:11:58 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/04 19:15:12 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,9 +137,9 @@ int	main(void)
 		add_history(line);
 		new_line = ft_strtrim(line, " ");
 		free(line);
-		if (is_valid(new_line))
-			exit_with_err();
 		if (check_qoutes(new_line))
+			exit_with_err();
+		if (is_valid(new_line))
 			exit_with_err();
 		ptr = handle_exp(new_line);
 		while (ptr)
