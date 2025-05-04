@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/05/03 11:20:45 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/04 19:11:58 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,13 @@ int	is_valid(char *s)
 	int	i;
 	int	flag;
 
+	if (!s)
+		return (0);
 	i = 0;
 	while (s[i])
 	{
 		flag = 0;
-		while (s[i] == ' ')
-			i++;
-		while (ft_isalnum(s[i]) || s[i] == '-' || s[i] == '_' || s[i] == '$'
-				|| s[i] == '/' || s[i] == '.' || s[i] == '\'' || s[i] == '"')
+		while (s[i] && s[i] != ' ' && s[i] != '|')
 		{
 			flag = 1;
 			i++;
@@ -33,12 +32,12 @@ int	is_valid(char *s)
 			return (1);
 		while (s[i] == ' ')
 			i++;
-		if ((s[i] == '>' && s[i + 1] == '>') || (s[i] == '<' && s[i + 1] == '<'))
-			i += 2;
-		else if (s[i] == '>' || s[i] == '<' || s[i] == '|')
+		if (s[i] == '|')
+			i++;
+		while (s[i] == ' ')
 			i++;
 	}
-	if (s[i - 1] == '|' || s[i - 1] == '>' || s[i - 1] == '<')
+	if (i > 0 && (s[i - 1] == '|' || s[i - 1] == '>' || s[i - 1] == '<'))
     	return (1);
 	return (0);
 }
@@ -49,6 +48,8 @@ int	check_qoutes(char *s)
 	int	single_f;
 	int	double_f;
 
+	if (!s)
+		return (0);
 	single_f = 0;
 	double_f = 0;
 	i = 0;
@@ -75,6 +76,8 @@ char	*handle_exp(char *s)
 	int	single_f;
 	int	double_f;
 
+	if (!s)
+		return (NULL);
 	single_f = 0;
 	double_f = 0;
 	i = 0;
@@ -116,13 +119,17 @@ char	*handle_exp(char *s)
 	return (NULL);
 }
 
+void	exit_with_err()
+{
+	printf("syntax error\n");
+	exit(2);
+}
+
 int	main(void)
 {
-	int		i;
 	char	*line;
 	char	*new_line;
 	char	*ptr;
-	char	**tokens;
 
 	while (1)
 	{
@@ -131,9 +138,9 @@ int	main(void)
 		new_line = ft_strtrim(line, " ");
 		free(line);
 		if (is_valid(new_line))
-			printf("error1\n");
+			exit_with_err();
 		if (check_qoutes(new_line))
-			printf("error2\n");
+			exit_with_err();
 		ptr = handle_exp(new_line);
 		while (ptr)
 		{
@@ -141,14 +148,7 @@ int	main(void)
 			new_line = ptr;
 			ptr = handle_exp(new_line);
 		}
-		tokens = ft_split(new_line, ' ');
-		i = 0;
-		while (tokens[i])
-		{
-			printf("%s\n", tokens[i]);
-			i++;
-		}
-		
+		printf("%s\n", new_line);
 		free(new_line);
 	}
 }

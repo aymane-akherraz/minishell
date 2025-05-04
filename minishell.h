@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:40:46 by aakherra          #+#    #+#             */
-/*   Updated: 2025/04/30 12:34:02 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/03 18:57:42 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,12 @@ typedef struct redir
 	struct redir *next;
 }	t_redir;
 
-typedef struct ast_node
+typedef struct s_list
 {
 	char				*value;
 	t_token				type;
 	struct redirect		*redir;
-	struct ast_node		*parent;
-	struct ast_node		*left_node;
-	struct ast_node		*right_node;
-}	t_ast_node;
+	struct s_list		*next;
+}	t_list;
 
 #endif

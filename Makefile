@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -f
 SRC = main.c
 OBJ = $(SRC:%.c=%.o)
@@ -13,7 +13,7 @@ $(NAME): $(OBJ)
 	$(CC) -o $@ $^ $(LIBFT) -lreadline
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ -lreadline
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	cd libft && make $@
