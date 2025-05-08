@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/05/04 19:15:12 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/08 23:33:45 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,38 @@
 int	is_valid(char *s)
 {
 	int	i;
+	int c;
+	int c2;
 	int	flag;
 
 	if (!s)
 		return (0);
+	if (ft_strchr(s, ';' || ft_strchr(s, '\\')))
+		return (1);
 	i = 0;
+	c = 0;
+	c2 = 0;
 	while (s[i])
 	{
 		flag = 0;
 		while (s[i] && s[i] != ' ' && s[i] != '|')
 		{
+			if (s[i] == '<')
+			{
+				if (s[i + 1] == '>')
+					return (1);
+				c++;				
+			}
+			else if (s[i] == '>')
+			{
+				if (s[i + 1] == '<')
+					return (1);
+				c2++;
+			}
+			else
+				
+			if (c > 2 || c2 > 2)
+				return (1);
 			flag = 1;
 			i++;
 		}
@@ -127,9 +149,17 @@ void	exit_with_err()
 
 int	main(void)
 {
+	int		i;
+	int		c;
+	int		j;
+	int 	r_flag;
 	char	*line;
 	char	*new_line;
 	char	*ptr;
+	char	**cmds;
+	t_list	*head;
+	t_list	*n;
+	t_redir	*r;
 
 	while (1)
 	{
@@ -148,7 +178,65 @@ int	main(void)
 			new_line = ptr;
 			ptr = handle_exp(new_line);
 		}
-		printf("%s\n", new_line);
+		cmds = ft_split(new_line, '|');
+		head = NULL;
+		i = 0;
+		while (cmds[i])
+		{
+			j = 0;
+			r = NULL;
+			ft_lstadd_back(&head, ft_lstnew(NULL, CMD_NAME));
+			r_flag = -1;
+			while (cmds[i][j])
+			{
+				c = 0;
+				while (cmds[i][j] && cmds[i][j] != ' ' && cmds[i][j] != '<'
+					&& cmds[i][j] != '>')
+				{
+					c++;
+					j++;
+				}
+				if (c > 0)
+				{
+					n = ft_lstlast(head);
+					if (r_flag >= 3)
+					{
+						ft_red_add_back(&n->redir, ft_new_red(ft_substr(cmds[i], j - c, c), r_flag));
+						r_flag = -1;
+					}
+					else
+						n->value = ft_substr(cmds[i], j - c, c);
+					// if ()
+					// {
+					// 	ft_lstadd_back(&head, ft_lstnew(, CMD_ARGS));	
+					// }
+				}
+				if (cmds[i][j] == '<' || cmds[i][j] == '>')
+				{
+					if (cmds[i][j] == '<' && cmds[i][j + 1] == '<')
+					{
+						r_flag = HERE_DOC;
+						j += 2;
+					}
+					else if (cmds[i][j] == '>' && cmds[i][j + 1] == '>')
+					{
+						r_flag = APPEND;
+						j += 2;
+					}
+					else
+					{
+						if (cmds[i][j] == '>')
+							r_flag = OUT_R;
+						else
+							r_flag = IN_R;
+						j++;
+					}
+				}
+				while (cmds[i][j] == ' ')
+					j++;
+			}
+			i++;
+		}
 		free(new_line);
 	}
 }

@@ -2,7 +2,7 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -f
-SRC = main.c
+SRC = main.c list_funcs.c
 OBJ = $(SRC:%.c=%.o)
 LIBFT = libft/libft.a
 
