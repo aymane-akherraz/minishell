@@ -6,7 +6,7 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:40:46 by aakherra          #+#    #+#             */
-/*   Updated: 2025/05/08 22:56:40 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/09 08:29:00 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_list
 {
 	char				*value;
 	e_token				type;
-	struct redirect		*redir;
+	struct s_redir		*redir;
 	struct s_list		*next;
 }	t_list;
 

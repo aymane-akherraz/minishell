@@ -6,11 +6,27 @@
 /*   By: aakherra <aakherra@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 20:01:32 by aakherra          #+#    #+#             */
-/*   Updated: 2025/05/08 23:33:45 by aakherra         ###   ########.fr       */
+/*   Updated: 2025/05/09 10:15:43 by aakherra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_red(char *p, char c)
+{
+	int	i;
+	i = 0;
+	p = ft_strchr(p, c);
+	if (p)
+	{
+		p++;
+		while (p[i] == ' ')
+			i++;
+		if (p[i] == c && i > 0)
+			return (1);
+	}
+	return (0);
+}
 
 int	is_valid(char *s)
 {
@@ -21,7 +37,7 @@ int	is_valid(char *s)
 
 	if (!s)
 		return (0);
-	if (ft_strchr(s, ';' || ft_strchr(s, '\\')))
+	if (check_red(s, '<') || check_red(s, '>'))
 		return (1);
 	i = 0;
 	c = 0;
@@ -35,7 +51,7 @@ int	is_valid(char *s)
 			{
 				if (s[i + 1] == '>')
 					return (1);
-				c++;				
+				c++;
 			}
 			else if (s[i] == '>')
 			{
@@ -43,8 +59,6 @@ int	is_valid(char *s)
 					return (1);
 				c2++;
 			}
-			else
-				
 			if (c > 2 || c2 > 2)
 				return (1);
 			flag = 1;
@@ -153,13 +167,14 @@ int	main(void)
 	int		c;
 	int		j;
 	int 	r_flag;
+	int		cmd_flag;
 	char	*line;
 	char	*new_line;
 	char	*ptr;
 	char	**cmds;
 	t_list	*head;
 	t_list	*n;
-	t_redir	*r;
+	t_redir *r;
 
 	while (1)
 	{
@@ -184,9 +199,9 @@ int	main(void)
 		while (cmds[i])
 		{
 			j = 0;
-			r = NULL;
 			ft_lstadd_back(&head, ft_lstnew(NULL, CMD_NAME));
 			r_flag = -1;
+			cmd_flag = 0;
 			while (cmds[i][j])
 			{
 				c = 0;
@@ -199,18 +214,23 @@ int	main(void)
 				if (c > 0)
 				{
 					n = ft_lstlast(head);
+					if (cmd_flag && r_flag < 0)
+					{
+						ft_lstadd_back(&head, ft_lstnew(ft_substr(cmds[i], j - c, c), CMD_ARGS));
+					}
 					if (r_flag >= 3)
 					{
 						ft_red_add_back(&n->redir, ft_new_red(ft_substr(cmds[i], j - c, c), r_flag));
 						r_flag = -1;
 					}
-					else
+					else if (!cmd_flag)
+					{
 						n->value = ft_substr(cmds[i], j - c, c);
-					// if ()
-					// {
-					// 	ft_lstadd_back(&head, ft_lstnew(, CMD_ARGS));	
-					// }
+						cmd_flag = 1;
+					}
 				}
+				while (cmds[i][j] == ' ')
+					j++;
 				if (cmds[i][j] == '<' || cmds[i][j] == '>')
 				{
 					if (cmds[i][j] == '<' && cmds[i][j + 1] == '<')
@@ -232,10 +252,22 @@ int	main(void)
 						j++;
 					}
 				}
-				while (cmds[i][j] == ' ')
-					j++;
 			}
 			i++;
+			if (cmds[i])
+				ft_lstadd_back(&head, ft_lstnew("|", PIPE));
+		}
+		n = head;
+		while (n)
+		{
+			printf("%d: %s\n", n->type, n->value);
+			r = n->redir;
+			while (r)
+			{
+				printf("RED %d: %s\n", r->type, r->file);
+				r = r->next;
+			}
+			n = n->next;
 		}
 		free(new_line);
 	}
